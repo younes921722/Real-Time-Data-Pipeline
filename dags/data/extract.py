@@ -3,7 +3,7 @@ import requests
 class DataExtractor:
     """Extracts user data from the randomuser.me API."""
 
-    def __init__(self, api_url="https://randomuser.me/api/"):
+    def __init__(self, api_url="https://randomuser.me/api"):
         self.api_url = api_url
 
     def extract_data(self):

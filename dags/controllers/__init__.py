@@ -1,1 +1,1 @@
-# from controllers.user_controller import UserController
+from controllers.user_controller import UserController

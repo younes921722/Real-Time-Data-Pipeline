@@ -60,7 +60,7 @@ class UserModel:
                 cursor = connection.cursor()
                 
                 insert_query = """
-                INSERT INTO users (first_name, last_name, gender, address, postcode, email, username, dob, registered, phone, picture)
+                INSERT INTO users_data (first_name, last_name, gender, address, postcode, email, username, dob, registered, phone, picture)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
                 """
                 
