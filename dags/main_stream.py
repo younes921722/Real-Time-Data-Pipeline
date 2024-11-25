@@ -27,11 +27,12 @@ default_args = {
 def create_user_table():
     manager = PostgresTableManager()
     manager.create_user_table_if_not_exists()
-    # manager.close_connection()
+    manager.create_load_table_if_not_exists()
+    manager.close_connection()
 
 
 def stream_data_to_kafka_potgres():   
-        streamer = DataStreamer(bootstrap_servers=["broker:29092"], topic_name="users_created")
+        streamer = DataStreamer(bootstrap_servers=["ed-kafka:29092"], topic_name="users_created")
         streamer.stream_data()
      
 

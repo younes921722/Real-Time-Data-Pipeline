@@ -29,6 +29,27 @@ class PostgresTableManager:
             self.connection.commit()
             logging.info("Table 'user_data' created or already exists.")
 
+    def create_load_table_if_not_exists(self):
+        if self.connection:
+            create_table_query = """
+                CREATE TABLE IF NOT EXISTS loaded_users_data (
+                    first_name VARCHAR(50),
+                    last_name VARCHAR(50),
+                    gender VARCHAR(10),
+                    address TEXT,
+                    postcode VARCHAR(50),
+                    email VARCHAR(100) UNIQUE,
+                    username VARCHAR(50) UNIQUE,
+                    dob TIMESTAMP,
+                    registered TIMESTAMP,
+                    phone VARCHAR(20),
+                    picture TEXT
+                );
+                """
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            logging.info("Table 'user_data' created or already exists.")
+
     def close_connection(self):
         if self.connection:
             self.cursor.close()

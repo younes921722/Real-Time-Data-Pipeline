@@ -1,5 +1,3 @@
-
-
 import json
 import logging
 import time
@@ -32,7 +30,7 @@ class DataStreamer:
 
                     self.producer.send(self.topic_name, data_str.encode("utf-8"))
                     
-                    """ we igest data into our postgres table in this time to ensure persistence of all the data"""
+                    """ we ingest data into our postgres table in this time to ensure persistence of all the data"""
                     UserController().insert_user(transformed_data)
                     
                     time.sleep(2)  # Adjust sleep duration as needed
