@@ -1,4 +1,4 @@
 logs/
-local_jupyter_data/.ipynb_checkpoints
-local_jupyter_data/checkpoint_dir_kafka
-local_jupyter_data/data
+local_jupyter_data/.ipynb_checkpoints/
+local_jupyter_data/checkpoint_dir_kafka/
+local_jupyter_data/data/
