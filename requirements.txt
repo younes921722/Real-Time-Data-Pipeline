@@ -135,3 +135,4 @@ WTForms==3.0.1
 yarl==1.9.2
 asyncio==3.4.3
 # psycopg2
+pyodbc==4.0.34

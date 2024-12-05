@@ -168,27 +168,7 @@ services:
     networks:
       - confluent
 
-  # spark-master:
-  #   image: bitnami/spark:3.4.1
-  #   container_name: spark-master
-  #   command: bin/spark-class org.apache.spark.deploy.master.Master
-  #   ports:
-  #     - "9090:8080"
-  #     - "7077:7077"
-  #   networks:
-  #     - confluent
-  # spark-worker:
-  #   image: bitnami/spark:3.4.1
-  #   command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
-  #   depends_on:
-  #     - spark-master
-  #   environment:
-  #     SPARK_MODE: worker
-  #     SPARK_WORKER_CORES: 4
-  #     SPARK_WORKER_MEMORY: 1g
-  #     SPARK_MASTER_URL: spark://spark-master:7077
-  #   networks:
-  #     - confluent
+
 
   cassandra_db:
     image: cassandra:latest
@@ -206,49 +186,49 @@ services:
   
 
     ##################################################333
-  # ed-pyspark-jupyter:
-  #   image: jupyter/pyspark-notebook:spark-3.3.0
-  #   user: root
-  #   container_name: ed-pyspark-jupyter-lab
-  #   ports:
-  #     - 8888:8888
-  #     - 4040:4040
-  #   environment:
-  #     JUPYTER_PORT: 8888
-  #     SPARK_UI_PORT: 4040
-  #     GRANT_SUDO: yes
-  #   volumes:
-  #     - streaming_data:/data:rw
-  #     - ./local_jupyter_data:/home/jovyan/work:rw
-  #   networks:
-  #     - confluent
-
-  ed-pyspark-jupyter-master:
+  ed-pyspark-jupyter:
     image: jupyter/pyspark-notebook:spark-3.3.0
-    container_name: ed-pyspark-jupyter-master
+    user: root
+    container_name: ed-pyspark-jupyter-lab
     ports:
       - 8888:8888
       - 4040:4040
-      - 7077:7077
     environment:
       JUPYTER_PORT: 8888
       SPARK_UI_PORT: 4040
-      SPARK_MASTER_PORT: 7077
-      SPARK_MASTER_WEBUI_PORT: 4040
-    command: "bash -c '($SPARK_HOME/sbin/start-master.sh) & (jupyter notebook)'"
+      GRANT_SUDO: yes
+    volumes:
+      - streaming_data:/data:rw
+      - ./local_jupyter_data:/home/jovyan/work:rw
     networks:
       - confluent
 
-  ed-pyspark-jupyter-worker1:
-    image: jupyter/pyspark-notebook:spark-3.3.0
-    container_name: ed-pyspark-jupyter-worker1
-    depends_on:
-      - ed-pyspark-jupyter-master
-    environment:
-      SPARK_MASTER_PORT: 7077
-    command: "bash -c '$SPARK_HOME/sbin/start-worker.sh spark://ed-pyspark-jupyter-master:7077'"
-    networks:
-      - confluent
+  # ed-pyspark-jupyter-master:
+  #   image: jupyter/pyspark-notebook:spark-3.3.0
+  #   container_name: ed-pyspark-jupyter-master
+  #   ports:
+  #     - 8888:8888
+  #     - 4040:4040
+  #     - 7077:7077
+  #   environment:
+  #     JUPYTER_PORT: 8888
+  #     SPARK_UI_PORT: 4040
+  #     SPARK_MASTER_PORT: 7077
+  #     SPARK_MASTER_WEBUI_PORT: 4040
+  #   command: "bash -c '($SPARK_HOME/sbin/start-master.sh) & (jupyter notebook)'"
+  #   networks:
+  #     - confluent
+
+  # ed-pyspark-jupyter-worker1:
+  #   image: jupyter/pyspark-notebook:spark-3.3.0
+  #   container_name: ed-pyspark-jupyter-worker1
+  #   depends_on:
+  #     - ed-pyspark-jupyter-master
+  #   environment:
+  #     SPARK_MASTER_PORT: 7077
+  #   command: "bash -c '$SPARK_HOME/sbin/start-worker.sh spark://ed-pyspark-jupyter-master:7077'"
+  #   networks:
+  #     - confluent
 
 volumes:
   streaming_data:

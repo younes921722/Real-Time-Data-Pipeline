@@ -8,6 +8,7 @@ from streaming.kafka_producer import DataStreamer
 from datetime import datetime, timedelta
 from airflow.utils.dates import days_ago
 from config.db_manager import PostgresTableManager
+from test import SQLServerConnection
 
 default_args = {
     'owner': 'airflow',
@@ -31,7 +32,68 @@ def create_user_table():
     manager.close_connection()
 
 
-def stream_data_to_kafka_potgres():   
+def stream_data_to_kafka_potgres():
+         # Using SQL Server Authentication
+        db = SQLServerConnection(
+            server="host.docker.internal",  
+            database="AdventureWorksLT2022",
+            username="younes",  
+            password="Younes921722",  
+            trusted_connection=False 
+        )
+        
+        try:
+            with db as connection:
+                cursor = connection.cursor()
+                
+                # Create a new table for job candidates
+                create_table_query = """
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'JobCandidates')
+                CREATE TABLE JobCandidates (
+                    CandidateID INT PRIMARY KEY IDENTITY(1,1),
+                    FirstName NVARCHAR(50),
+                    LastName NVARCHAR(50),
+                    Position NVARCHAR(100),
+                    YearsExperience INT,
+                    ExpectedSalary DECIMAL(10,2)
+                )
+                """
+                cursor.execute(create_table_query)
+                connection.commit()
+                print("Table created successfully")
+                
+                # Insert multiple candidates
+                insert_query = """
+                INSERT INTO JobCandidates (FirstName, LastName, Position, YearsExperience, ExpectedSalary)
+                VALUES (?, ?, ?, ?, ?)
+                """
+                candidates = [
+                    ('John', 'Smith', 'Software Engineer', 5, 85000.00),
+                    ('Sarah', 'Johnson', 'Data Scientist', 3, 78000.00),
+                    ('Michael', 'Brown', 'Project Manager', 7, 95000.00),
+                    ('Emily', 'Davis', 'UX Designer', 4, 72000.00)
+                ]
+                
+                for candidate in candidates:
+                    cursor.execute(insert_query, candidate)
+                connection.commit()
+                print("Sample data inserted successfully")
+                
+                # Query and display the inserted data
+                cursor.execute("SELECT * FROM JobCandidates")
+                rows = cursor.fetchall()
+                print("\nCurrent Job Candidates:")
+                print("-----------------------")
+                for row in rows:
+                    print(f"ID: {row.CandidateID}, Name: {row.FirstName} {row.LastName}")
+                    print(f"Position: {row.Position}")
+                    print(f"Experience: {row.YearsExperience} years")
+                    print(f"Expected Salary: ${row.ExpectedSalary:,.2f}")
+                    print("-----------------------")
+                
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
         streamer = DataStreamer(bootstrap_servers=["ed-kafka:29092"], topic_name="users_created")
         streamer.stream_data()
      
