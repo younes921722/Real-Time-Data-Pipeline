@@ -203,36 +203,11 @@ services:
     networks:
       - confluent
 
-  # ed-pyspark-jupyter-master:
-  #   image: jupyter/pyspark-notebook:spark-3.3.0
-  #   container_name: ed-pyspark-jupyter-master
-  #   ports:
-  #     - 8888:8888
-  #     - 4040:4040
-  #     - 7077:7077
-  #   environment:
-  #     JUPYTER_PORT: 8888
-  #     SPARK_UI_PORT: 4040
-  #     SPARK_MASTER_PORT: 7077
-  #     SPARK_MASTER_WEBUI_PORT: 4040
-  #   command: "bash -c '($SPARK_HOME/sbin/start-master.sh) & (jupyter notebook)'"
-  #   networks:
-  #     - confluent
-
-  # ed-pyspark-jupyter-worker1:
-  #   image: jupyter/pyspark-notebook:spark-3.3.0
-  #   container_name: ed-pyspark-jupyter-worker1
-  #   depends_on:
-  #     - ed-pyspark-jupyter-master
-  #   environment:
-  #     SPARK_MASTER_PORT: 7077
-  #   command: "bash -c '$SPARK_HOME/sbin/start-worker.sh spark://ed-pyspark-jupyter-master:7077'"
-  #   networks:
-  #     - confluent
-
 volumes:
   streaming_data:
 networks:
   confluent:
     driver: bridge
-
+  # default:
+  #   external:
+  #     name: host
