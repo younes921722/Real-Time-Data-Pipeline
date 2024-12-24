@@ -37,7 +37,8 @@ SQL_SERVER_CONFIG = {
 
 # Table names
 POSTGRES_TABLE = "loaded_users_data"
-SQL_SERVER_TABLE = "loaded_users_data"
+SQL_SERVER_NON_CRITICAL_TABLE = os.getenv("SQL_SERVER_NON_CRITICAL_TABLE")
+SQL_SERVER_CRITICAL_TABLE= os.getenv("SQL_SERVER_CRITICAL_TABLE")
 
 def detailed_odbc_driver_check():
     """Perform a comprehensive ODBC driver check."""
@@ -127,26 +128,50 @@ def load_to_sql_server(df):
 
         # Prepare insert query to match the new columns
         insert_query = f"""
-            INSERT INTO {SQL_SERVER_TABLE} (first_name, last_name, gender, address, postcode, email, username, dob, registered, phone, picture)
-            SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            INSERT INTO {SQL_SERVER_CRITICAL_TABLE} (id,first_name, last_name, email, username)
+            SELECT ?, ?, ?, ?, ?
             WHERE NOT EXISTS (
-                SELECT 1 FROM {SQL_SERVER_TABLE}
+                SELECT 1 FROM {SQL_SERVER_CRITICAL_TABLE}
                 WHERE email = ? OR username = ?
             )
             """
         
         # Prepare data for bulk insert, including the new columns
-        data_to_insert = df[['first_name', 'last_name', 'gender', 'address', 'postcode', 'email', 'username', 'dob', 'registered', 'phone', 'picture']].values.tolist()
-        print("data to insert",data_to_insert)
+        data_to_insert = df[['id','first_name', 'last_name', 'email', 'username']].values.tolist()
+        # print("data to insert",data_to_insert)
 
         # Modify the data to include the email and username for the WHERE condition
         data_with_condition = [
-            (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[5], row[6])  # email and username for check
+            (row[0], row[1], row[2], row[3], row[4], row[3], row[4])  # email and username for check
             for row in data_to_insert
         ]
 
+        # Prepare insert query to match the new columns
+        insert_query1 = f"""
+            INSERT INTO {SQL_SERVER_NON_CRITICAL_TABLE} (critical_user_id, gender, address, postcode, dob, registered, phone, picture)
+            SELECT ?, ?, ?, ?, ?, ?, ?, ?
+            WHERE NOT EXISTS (
+                SELECT 1 FROM {SQL_SERVER_NON_CRITICAL_TABLE}
+                WHERE critical_user_id = ?
+            )
+            """
+        
+        # Prepare data for bulk insert, including the new columns
+        non_critical_data_to_insert = df[['id', 'gender', 'address', 'postcode', 'dob', 'registered', 'phone', 'picture']].values.tolist()
+        # print("data to insert",non_critical_data_to_insert)
+
+        # Modify the data to include the email and username for the WHERE condition
+        data_with_condition1 = [
+            (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[0])  # email and username for check
+            for row in non_critical_data_to_insert
+        ]
+        
         # Bulk insert with condition
         cursor.executemany(insert_query, data_with_condition)
+        # Bulk insert with condition
+        cursor.executemany(insert_query1, data_with_condition1)
+        
+
         connection.commit()
 
         log_info(f"Successfully loaded {len(data_to_insert)} rows into SQL Server")

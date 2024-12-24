@@ -33,6 +33,7 @@ class PostgresTableManager:
         if self.connection:
             create_table_query = """
                 CREATE TABLE IF NOT EXISTS loaded_users_data (
+                    id SERIAL PRIMARY KEY,
                     first_name VARCHAR(50),
                     last_name VARCHAR(50),
                     gender VARCHAR(10),
