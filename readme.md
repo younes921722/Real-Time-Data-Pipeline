@@ -1,4 +1,5 @@
 # Project Architecture
+![1010 drawio](https://github.com/user-attachments/assets/f221d5df-98ed-4a5a-8574-845b188cd23c)
 
 # Lambda Architecture Data Processing Platform
 
