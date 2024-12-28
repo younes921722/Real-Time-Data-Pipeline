@@ -78,10 +78,9 @@ The project is structured around the Lambda Architecture paradigm, consisting of
 2.  **Local Environment:**
     *   Clone the repository
         ```bash
-        git clone <repository_url>
-        cd <repository_name>
+        git clone https://github.com/younes921722/Real-Time-Data-Pipeline.git
         ```
-    *   Build and run docker container
+    *   Build and run docker containers
         ```bash
         docker-compose up -d
         ```
