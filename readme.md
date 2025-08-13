@@ -2,7 +2,7 @@
 ![1010 drawio](https://github.com/user-attachments/assets/f221d5df-98ed-4a5a-8574-845b188cd23c)
 
 # Demo
-https://www.youtube.com/watch?v=r1FkifkOdvA
+[Watch on YouTube](https://www.youtube.com/watch?v=r1FkifkOdvA)
 # Lambda Architecture Data Processing Platform
 
 This project implements a Lambda Architecture for data processing, combining both batch and real-time data streams to provide a unified view for analysis and reporting. The project utilizes a hybrid approach, with the batch processing layer running on the cloud and the speed processing layer running locally.
